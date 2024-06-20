@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 
+
 namespace Module24.Lib
 {
     public class MainConnector
@@ -35,6 +36,18 @@ namespace Module24.Lib
             if (connection.State == ConnectionState.Open)
             {
                 await connection.CloseAsync();
+            }
+        }
+
+        public SqlConnection GetConnection()
+        {
+            if (connection.State == ConnectionState.Open)
+            {
+                return connection;
+            }
+            else
+            {
+                throw new Exception("Подключение уже закрыто!");
             }
         }
     }
