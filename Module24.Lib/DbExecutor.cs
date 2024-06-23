@@ -29,5 +29,66 @@ namespace Module24.Lib
             adapter.Fill(ds);
             return ds.Tables[0];
         }
+
+        public SqlDataReader SelectAllCommandReader(string table)
+        {
+            var command = new SqlCommand
+            {
+                CommandType = CommandType.Text,
+                CommandText = "select * from " + table,
+                Connection = connector.GetConnection(),
+            };
+
+            SqlDataReader reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                return reader;
+            }
+
+            return null;
+        }
+
+        public int UpdateValueCommand(string table, string searchingColumn, string searchingValue, string editingColumn, string newValue)
+        {
+            var command = new SqlCommand
+            {
+                CommandType = CommandType.Text,
+                CommandText = $"update {table} set {editingColumn} = '{newValue}' where {searchingColumn} = '{searchingValue}';",
+                Connection = connector.GetConnection(),
+            };
+
+            return command.ExecuteNonQuery();
+        }
+
+        public int DeleteValueCommand(string table, string column, string value)
+        {
+            var command = new SqlCommand
+            {
+                CommandType = CommandType.Text,
+                CommandText = "delete from " + table + " where " + column + " = '" + value + "';",
+                Connection = connector.GetConnection(),
+            };
+
+            return command.ExecuteNonQuery();
+        }
+
+        public int ExecProcedureAddUser(string name, string login)
+        {
+            var command = new SqlCommand
+            {
+                CommandType = CommandType.StoredProcedure,
+                CommandText = "AddingUserProc",
+                Connection = connector.GetConnection(),
+                Parameters = 
+                {
+                    new SqlParameter("@Name", name),
+                    new SqlParameter("@Login", login)
+                },
+            };
+            
+            return command.ExecuteNonQuery();
+        }
+
     }
 }
